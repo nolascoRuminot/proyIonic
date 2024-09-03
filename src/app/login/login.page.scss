@@ -1,0 +1,21 @@
+.link-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .link-left,
+  .link-right {
+    color: #3880ff; /* Ajusta el color si es necesario */
+    text-decoration: none;
+  }
+  
+  .link-left:hover,
+  .link-right:hover {
+    text-decoration: underline;
+  }
+
+  .mrgn-top-3{
+    margin-top: 30px !important;
+  }
+  
