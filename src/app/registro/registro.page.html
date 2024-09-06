@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Registro</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form (ngSubmit)="registrarse()">
+    <ion-item>
+      <ion-label position="floating">Nombre</ion-label>
+      <ion-input  id="nombre" type="text" [(ngModel)]="nombre" name="nombre" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Correo</ion-label>
+      <ion-input id="email" type="email" [(ngModel)]="emailRegistro" name="emailRegistro" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Contraseña</ion-label>
+      <ion-input id="pass" type="password" [(ngModel)]="passwordRegistro" name="passwordRegistro" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Repetir Contraseña</ion-label>
+      <ion-input id="confrmPass" type="password" [(ngModel)]="confirmPassword" name="confirmPassword" required></ion-input>
+    </ion-item>
+
+    <p id="name-error-message" style="color: red; display: none;">El nombre solo debe contener letras</p>
+    <p id="error-message" style="color: red; display: none;">Correo no válido</p>
+    <p id="password-error-message" style="color: red; display: none;">La contraseña no cumple los requisitos.</p>
+    <p id="confirm-error-message" style="color: red; display: none;">Las contraseñas no coinciden.</p>
+
+    <!-- Contenedor para el mensaje de error -->
+    <div *ngIf="errorMessage" style="color: red; margin-top: 10px;">
+      {{ errorMessage }}
+    </div>
+
+    <ion-button class="ion-margin-top" expand="full" type="submit" [disabled]="!nombre || !emailRegistro || !passwordRegistro || !confirmPassword">Registrarse</ion-button>
+    
+  </form>
+
+ 
+</ion-content>
+

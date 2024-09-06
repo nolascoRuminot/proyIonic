@@ -1,17 +1,27 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
-export class LoginPage {
+export class LoginPage implements OnInit {
   email!: string;
   password!: string;
   errorMessage!: string;
+  successMessage!: string;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private route: ActivatedRoute) {}
+
+  ngOnInit() {
+    // Capturar el mensaje de éxito de los queryParams si existe
+    this.route.queryParams.subscribe(params => {
+      if (params['mensaje']) {
+        this.successMessage = params['mensaje'];
+      }
+    });
+  }
 
   login() {
 
@@ -21,7 +31,7 @@ export class LoginPage {
     }
 
     if (!this.isEmailValid(this.email)) {
-      this.errorMessage = 'Por favor, ingresa un correo electrónico.';
+      this.errorMessage = 'Por favor, ingresa un correo electrónico válido.';
       return;
     }
 
@@ -32,14 +42,6 @@ export class LoginPage {
 
     this.errorMessage = ''; // Limpiar cualquier mensaje de error anterior.
     this.router.navigateByUrl('/tabs/bodegas');
-
-    // si logica si deseo agregar autenticacion //
-
-    /*if (this.email === 'admin@smartstore.com' && this.password === 'Admin123') {
-      this.router.navigateByUrl('/tabs/bodegas');
-    } else {
-      this.errorMessage = 'Credenciales inválidas. Por favor, intenta nuevamente.';
-    }*/
   }
 
   isEmailValid(email: string): boolean {
