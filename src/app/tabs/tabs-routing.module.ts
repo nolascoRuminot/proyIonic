@@ -29,11 +29,16 @@ const routes: Routes = [
         pathMatch: 'full'
       }
     ]
+  },
+  {
+    path: '',
+    redirectTo: '/tabs/bodegas',
+    pathMatch: 'full'
   }
 ];
 
-
 @NgModule({
   imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
 })
 export class TabsPageRoutingModule {}

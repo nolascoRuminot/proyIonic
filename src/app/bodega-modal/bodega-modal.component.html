@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ bodega.id ? 'Editar Bodega' : 'Nueva Bodega' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Campos editables -->
+  <ion-item>
+    <ion-label position="stacked">Nombre</ion-label>
+    <ion-input [(ngModel)]="bodega.name"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Ubicación</ion-label>
+    <ion-input [(ngModel)]="bodega.location"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Capacidad</ion-label>
+    <ion-input [(ngModel)]="bodega.capacity" type="number"></ion-input> <!-- Campo solo numérico -->
+  </ion-item>
+
+  <!-- Mensaje de error si hay campos vacíos o datos incorrectos -->
+  <div *ngIf="errorMessage" style="color: red; margin-top: 10px;">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Mostrar el botón de acción según si estamos agregando o editando -->
+  <ion-button expand="block" color="primary" (click)="save()">
+    {{ bodega.id ? 'Guardar Cambios' : 'Agregar Bodega' }}
+  </ion-button>
+
+  <!-- Mostrar el botón eliminar solo si la bodega ya existe -->
+  <ion-button *ngIf="bodega.id" expand="block" color="danger" (click)="delete()">Eliminar Bodega</ion-button>
+</ion-content>
