@@ -1,18 +1,42 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Productos</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()">
+        <ion-icon name="power" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <ion-item *ngFor="let producto of productos">
-      {{ producto.name }} - {{ producto.bodega }}
-    </ion-item>
-  </ion-list>
+  <!-- Input de búsqueda -->
+  <ion-item>
+    <ion-label position="floating">Buscar Producto</ion-label>
+    <ion-input id="search-input" type="text"></ion-input>
+  </ion-item>
 
+  <ion-card-content>
+    <ion-list id="productos-list">
+      <!-- Listar productos -->
+      <ion-item *ngFor="let producto of productos" class="producto-item" (click)="openModal(producto)">
+        <ion-thumbnail slot="start">
+          <img [src]="producto.image" alt="{{ producto.name }}">
+        </ion-thumbnail>
+        <ion-label>
+          <h2>{{ producto.name }}</h2>
+          <p>{{ producto.description }}</p>
+          <p>Categoría: {{ producto.category }}</p>
+          <p>Código de Seguimiento: {{ producto.trackingCode }}</p>
+          <p>Precio: {{ producto.price | currency }}</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-card-content>
+
+  <!-- Botón para agregar un nuevo producto -->
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="addProducto()">
+    <ion-fab-button (click)="openNewProductoModal()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>

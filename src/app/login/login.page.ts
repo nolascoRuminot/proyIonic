@@ -41,7 +41,8 @@ export class LoginPage implements OnInit {
     }
 
     this.errorMessage = ''; // Limpiar cualquier mensaje de error anterior.
-    this.router.navigateByUrl('/tabs/bodegas');
+    // Navegar a la página de bodegas y pasar el email como parámetro
+    this.router.navigateByUrl(`/tabs/bodegas?usuario=${this.email}`);
   }
 
   isEmailValid(email: string): boolean {

@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BodegaModalComponent } from '../bodega-modal/bodega-modal.component';
 
 interface Bodega {
@@ -15,13 +16,30 @@ interface Bodega {
   templateUrl: './bodegas.page.html',
   styleUrls: ['./bodegas.page.scss'],
 })
-export class BodegasPage {
+export class BodegasPage implements OnInit {
   bodegas: Bodega[] = [
     { id: 1, name: 'Bodega 1', location: 'Ciudad 1', capacity: 1000 },
     { id: 2, name: 'Bodega 2', location: 'Ciudad 2', capacity: 500 }
   ];
 
-  constructor(private modalController: ModalController) {}
+  usuario: string = ''; // Variable para almacenar el nombre del usuario
+
+  constructor(
+    private modalController: ModalController,
+    private route: ActivatedRoute, // Activar ruta para obtener los parámetros
+    private router: Router
+  ) {}
+
+  ngOnInit() {
+    // Obtener el parámetro 'usuario' de la URL
+    this.route.queryParams.subscribe(params => {
+      this.usuario = params['usuario'] || 'Usuario'; // Si no hay parámetro, mostrar "Usuario"
+    });
+  }
+
+  logout() {
+    this.router.navigateByUrl('/login'); // Redirigir al login
+  }
 
   // Abrir modal para editar la bodega existente
   async openModal(bodega: Bodega) {

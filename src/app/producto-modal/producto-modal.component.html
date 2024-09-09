@@ -1,0 +1,59 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ producto.id ? 'Editar Producto' : 'Nuevo Producto' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Código de seguimiento -->
+  <ion-item>
+    <ion-label position="stacked">Código de Seguimiento</ion-label>
+    <ion-input [(ngModel)]="producto.trackingCode"></ion-input>
+  </ion-item>
+
+  <!-- Imagen (URL) -->
+  <ion-item>
+    <ion-label position="stacked">URL de Imagen</ion-label>
+    <ion-input [(ngModel)]="producto.image" type="url"></ion-input>
+  </ion-item>
+
+  <!-- Nombre del producto -->
+  <ion-item>
+    <ion-label position="stacked">Nombre del Producto</ion-label>
+    <ion-input [(ngModel)]="producto.name"></ion-input>
+  </ion-item>
+
+  <!-- Descripción del producto -->
+  <ion-item>
+    <ion-label position="stacked">Descripción</ion-label>
+    <ion-input [(ngModel)]="producto.description"></ion-input>
+  </ion-item>
+
+  <!-- Precio del producto -->
+  <ion-item>
+    <ion-label position="stacked">Precio</ion-label>
+    <ion-input [(ngModel)]="producto.price" type="number" min="0"></ion-input>
+  </ion-item>
+
+  <!-- Categoría del producto -->
+  <ion-item>
+    <ion-label position="stacked">Categoría</ion-label>
+    <ion-input [(ngModel)]="producto.category"></ion-input>
+  </ion-item>
+
+  <!-- Mensaje de error si hay campos vacíos o datos incorrectos -->
+  <div *ngIf="errorMessage" style="color: red; margin-top: 10px;">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Botón de acción según si estamos agregando o editando -->
+  <ion-button expand="block" color="primary" (click)="save()">
+    {{ producto.id ? 'Guardar Cambios' : 'Agregar Producto' }}
+  </ion-button>
+
+  <!-- Botón eliminar solo si el producto ya existe -->
+  <ion-button *ngIf="producto.id" expand="block" color="danger" (click)="delete()">Eliminar Producto</ion-button>
+</ion-content>
