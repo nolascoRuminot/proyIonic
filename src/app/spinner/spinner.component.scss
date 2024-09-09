@@ -1,0 +1,11 @@
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    position: absolute;
+    width: 100%;
+    background-color: var(--ion-background-color, rgba(255, 255, 255, 0.8));
+    z-index: 9999;
+  }
+  

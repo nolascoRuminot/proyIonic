@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { AnimationController } from '@ionic/angular'; // Importar AnimationController
 
 @Component({
   selector: 'app-login',
@@ -12,7 +13,7 @@ export class LoginPage implements OnInit {
   errorMessage!: string;
   successMessage!: string;
 
-  constructor(private router: Router, private route: ActivatedRoute) {}
+  constructor(private router: Router, private route: ActivatedRoute, private animationCtrl: AnimationController) {} // Inyectar AnimationController
 
   ngOnInit() {
     // Capturar el mensaje de éxito de los queryParams si existe
@@ -21,6 +22,21 @@ export class LoginPage implements OnInit {
         this.successMessage = params['mensaje'];
       }
     });
+
+    // Animación de la imagen del logo al cargar la página de login
+    const image = document.querySelector('.logo');
+    if (image) {
+      const animation = this.animationCtrl.create()
+        .addElement(image)
+        .duration(1000)  // Duración de 1 segundo
+        .easing('ease-in-out')  // Transición suave
+        .fromTo('transform', 'scale(0.5)', 'scale(1)')  // Efecto zoom in
+        .fromTo('opacity', '0', '1');  // Efecto fade in (aparecer)
+
+      // Ejecutar la animación
+      animation.play();
+    }
+
   }
 
   login() {

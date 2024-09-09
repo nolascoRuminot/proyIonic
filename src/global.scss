@@ -35,3 +35,17 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
+
+// Asegurar que los modales siempre tengan un z-index alto
+ion-modal {
+    z-index: 9999 !important;  // Fuerza que el modal esté encima de otros elementos
+  }
+  
+  .modal-wrapper {
+    z-index: 9999 !important;  // Asegurar que el contenido del modal también esté en el frente
+  }
+  // Asegurar que el contenido principal no tenga un z-index alto
+ion-content {
+    z-index: 1 !important;  // Forzar que el contenido principal tenga un z-index más bajo
+  }
+  

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-movimientos',
@@ -11,7 +12,13 @@ export class MovimientosPage {
     { producto: 'Producto 2', tipo: 'Salida', cantidad: 5 },
   ];
 
-  constructor() {}
+  constructor(
+    private router: Router
+  ) {}
+
+  logout() {
+    this.router.navigateByUrl('/login'); // Redirigir al login
+  }
 
   addMovimiento() {
     const newMovimiento = {
