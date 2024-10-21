@@ -1,0 +1,57 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ movimiento?.id ? 'Editar Movimiento' : 'Nuevo Movimiento' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Producto -->
+  <ion-item>
+    <ion-label>Producto</ion-label>
+    <ion-select [(ngModel)]="movimiento.producto" placeholder="Selecciona un producto">
+      <ion-select-option *ngFor="let producto of productos" [value]="producto.id">
+        {{ producto.name }}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <!-- Bodega -->
+  <ion-item>
+    <ion-label>Bodega</ion-label>
+    <ion-select [(ngModel)]="movimiento.bodega" placeholder="Selecciona una bodega">
+      <ion-select-option *ngFor="let bodega of bodegas" [value]="bodega.id">
+        {{ bodega.name }}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <!-- Cantidad -->
+  <ion-item>
+    <ion-label>Cantidad</ion-label>
+    <ion-input [(ngModel)]="movimiento.cantidad" type="number" placeholder="Cantidad" style="text-align: right;"></ion-input>
+  </ion-item>
+
+
+  <!-- Tipo de Movimiento -->
+  <ion-item>
+    <ion-label>Tipo de Movimiento</ion-label>
+    <ion-select [(ngModel)]="movimiento.tipo" placeholder="Selecciona el tipo">
+      <ion-select-option value="entrada">Entrada</ion-select-option>
+      <ion-select-option value="salida">Salida</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <!-- Mensaje de error si hay validación fallida -->
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Botón para guardar el movimiento -->
+  <ion-button expand="block" (click)="save()">Guardar Movimiento</ion-button>
+
+  <!-- Botón para eliminar solo si el movimiento existe -->
+  <ion-button *ngIf="movimiento.id" expand="block" color="danger" (click)="delete()">Eliminar Movimiento</ion-button>
+</ion-content>

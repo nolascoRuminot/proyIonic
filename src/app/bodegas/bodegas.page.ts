@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, AlertController } from '@ionic/angular';  // Importar AlertController
 import { ActivatedRoute, Router } from '@angular/router';
 import { BodegaModalComponent } from '../bodega-modal/bodega-modal.component';
+import { DataService } from '../services/data.service';  // Importar el servicio para manejar la API REST
 
 interface Bodega {
   id: number;
@@ -17,28 +18,39 @@ interface Bodega {
   styleUrls: ['./bodegas.page.scss'],
 })
 export class BodegasPage implements OnInit {
-  bodegas: Bodega[] = [
-    { id: 1, name: 'Bodega 1', location: 'Ciudad 1', capacity: 1000 },
-    { id: 2, name: 'Bodega 2', location: 'Ciudad 2', capacity: 500 }
-  ];
-
+  bodegas: Bodega[] = [];
   usuario: string = ''; // Variable para almacenar el nombre del usuario
 
   constructor(
     private modalController: ModalController,
-    private route: ActivatedRoute, // Activar ruta para obtener los parámetros
-    private router: Router
+    private alertController: AlertController,  // Inyectar AlertController
+    private route: ActivatedRoute,
+    private router: Router,
+    private dataService: DataService  // Inyectar el DataService
   ) {}
 
   ngOnInit() {
-    // Obtener el parámetro 'usuario' de la URL
+    // Obtener el parámetro 'usuario' de la URL o del localStorage/sessionStorage
     this.route.queryParams.subscribe(params => {
-      this.usuario = params['usuario'] || 'Usuario'; // Si no hay parámetro, mostrar "Usuario"
+      this.usuario = params['usuario'] || localStorage.getItem('usuario') || sessionStorage.getItem('usuario') || 'Usuario';
+    });
+
+    // Obtener la lista de bodegas desde el servicio
+    this.getBodegas();
+  }
+
+  // Método para obtener la lista de bodegas desde el servicio
+  getBodegas() {
+    this.dataService.getBodegas().subscribe((response: Bodega[]) => {
+      this.bodegas = response;
     });
   }
 
+  // Método para cerrar sesión
   logout() {
-    this.router.navigateByUrl('/login'); // Redirigir al login
+    localStorage.removeItem('usuario');  // Limpiar localStorage
+    sessionStorage.removeItem('usuario');  // Limpiar sessionStorage
+    this.router.navigateByUrl('/login');  // Redirigir al login
   }
 
   // Abrir modal para editar la bodega existente
@@ -52,7 +64,7 @@ export class BodegasPage implements OnInit {
 
     modal.onDidDismiss().then((result) => {
       if (result.data) {
-        this.updateBodegas(result.data);
+        this.updateBodega(result.data);
       }
     });
 
@@ -64,12 +76,12 @@ export class BodegasPage implements OnInit {
     const modal = await this.modalController.create({
       component: BodegaModalComponent,
       componentProps: {
-        bodega: { id: null, name: '', location: '', capacity: null } // Bodega vacía
+        bodega: { name: '', location: '', capacity: null } // No establecer el id para que json-server lo genere
       }
     });
 
     modal.onDidDismiss().then((result) => {
-      if (result.data && result.data.id === null) {
+      if (result.data) {
         this.addBodega(result.data);
       }
     });
@@ -77,19 +89,55 @@ export class BodegasPage implements OnInit {
     return await modal.present();
   }
 
-  // Agregar una nueva bodega a la lista
+  // Agregar una nueva bodega a la lista y al archivo db.json
   addBodega(newBodega: Bodega) {
-    newBodega.id = this.bodegas.length + 1;
-    this.bodegas.push(newBodega);
+    // El id será generado automáticamente por json-server
+    this.dataService.addBodega(newBodega).subscribe((addedBodega: Bodega) => {
+      this.bodegas.push(addedBodega);  // Añadir la bodega a la lista local después de la respuesta del servidor
+    });
+  }
+
+  // Confirmar la eliminación de la bodega
+  async confirmDelete(bodega: Bodega) {
+    const alert = await this.alertController.create({
+      header: 'Confirmar eliminación',
+      message: `¿Estás seguro de que deseas eliminar la bodega "${bodega.name}"?`,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => {
+            console.log('Eliminación cancelada');
+          }
+        },
+        {
+          text: 'Eliminar',
+          handler: () => {
+            this.deleteBodega(bodega);  // Llamar al método para eliminar la bodega
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  // Eliminar la bodega con confirmación
+  deleteBodega(bodega: Bodega) {
+    this.dataService.deleteBodega(bodega.id).subscribe(() => {
+      this.bodegas = this.bodegas.filter(b => b.id !== bodega.id); // Eliminar de la lista local
+    });
   }
 
   // Actualizar o eliminar la bodega
-  updateBodegas(updatedBodega: Bodega) {
-    const index = this.bodegas.findIndex(b => b.id === updatedBodega.id);
+  updateBodega(updatedBodega: Bodega) {
     if (updatedBodega.delete) {
-      this.bodegas.splice(index, 1); // Eliminar la bodega
+      this.confirmDelete(updatedBodega);  // Mostrar confirmación antes de eliminar
     } else {
-      this.bodegas[index] = updatedBodega; // Actualizar la bodega
+      this.dataService.updateBodega(updatedBodega).subscribe((updated: Bodega) => {
+        const index = this.bodegas.findIndex(b => b.id === updated.id);
+        this.bodegas[index] = updated;  // Actualizar la bodega en la lista local
+      });
     }
   }
 }

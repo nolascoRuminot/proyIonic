@@ -1,82 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import * as $ from 'jquery';
+import { DataService } from '../services/data.service';  // Importar el servicio para manejar la API REST
 
 @Component({
   selector: 'app-registro',
   templateUrl: './registro.page.html',
   styleUrls: ['./registro.page.scss'],
 })
-export class RegistroPage implements OnInit  {
+export class RegistroPage implements OnInit {
   nombre!: string;
   emailRegistro!: string;
   passwordRegistro!: string;
   confirmPassword!: string;
   errorMessage!: string;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private dataService: DataService) {}  // Inyectar el DataService
 
-  ngOnInit() {
-    
-    $(() => {
-      // Expresiones regulares
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const nameRegex = /^[A-Za-záéíóúÁÉÍÓÚñÑ\s]+$/;
-      const passwordRegex = /^(?=(.*[A-Z]){1,})(?=(.*\d){4,})(?=(.*[\W_]){3,}).{8,}$/;
-
-
-      $('#email').on('input', function () {
-        const emailValue = $(this).val() as string | undefined;;
-
-        if (emailValue && emailRegex.test(emailValue)) {
-          // Si el correo es válido
-          $('#error-message').hide(); // Oculta el mensaje de error
-        } else {
-          // Si el correo no es válido
-          $('#error-message').text('Correo no válido').show(); // Muestra el mensaje de error
-        }
-      });
-
-      $('#nombre').on('input', function() {
-        const nameValue = $(this).val() as string | undefined;
-    
-        if (nameValue && nameRegex.test(nameValue) || nameValue == '') {
-          // Si el nombre es válido (solo letras)
-          $('#name-error-message').hide(); // Oculta el mensaje de error
-        } else {
-          // Si el nombre es inválido (contiene otros caracteres)
-          $('#name-error-message').text('El nombre solo debe contener letras').show(); // Muestra el mensaje de error
-        }
-      });
-
-
-      $('#confrmPass').on('input', function() {
-        const passwordValue = $('#pass').val() as string | undefined;
-        const confirmPasswordValue = $('#confrmPass').val() as string | undefined;
-    
-        // Validar que las contraseñas no estén vacías
-        if (!passwordValue || !confirmPasswordValue) {
-          $('#password-error-message').text('Ambos campos de contraseña son obligatorios').show();
-          return;
-        }
-    
-        // Validar si las contraseñas coinciden
-        if (passwordValue !== confirmPasswordValue) {
-          $('#confirm-error-message').text('Las contraseñas no coinciden').show();
-        } else {
-          $('#confirm-error-message').hide(); // Ocultar el mensaje de error si coinciden
-        }
-    
-        // Validar la complejidad de la contraseña
-        if (passwordRegex.test(passwordValue)) {
-          $('#password-error-message').hide(); // Ocultar el mensaje de error si la contraseña es válida
-        } else {
-          $('#password-error-message').text('La contraseña no cumple con los requisitos: al menos 4 números, 3 caracteres especiales y 1 mayúscula').show();
-        }
-      });
-
-    });
-  }
+  ngOnInit() {}
 
   registrarse() {
     // Validar si todos los campos están llenos
@@ -109,12 +49,23 @@ export class RegistroPage implements OnInit  {
       return;
     }
 
-    // Lógica para registrar al usuario
-    this.errorMessage = ''; // Limpiar cualquier mensaje de error anterior.
-    this.router.navigate(['/login'], {
-      queryParams: { mensaje: 'Registrado con exito, debes iniciar sesión.' }
-    });
+    // Si todo es válido, crear el nuevo usuario
+    const nuevoUsuario = {
+      nombre: this.nombre,
+      email: this.emailRegistro,
+      password: this.passwordRegistro
+    };
 
+    // Enviar los datos al archivo `db.json` a través de un POST usando el servicio
+    this.dataService.registrarUsuario(nuevoUsuario).subscribe(response => {
+      // Si el registro es exitoso, redirigir al login
+      this.router.navigate(['/login'], {
+        queryParams: { mensaje: 'Registrado con éxito, debes iniciar sesión.' }
+      });
+    }, error => {
+      // Mostrar un mensaje de error si hay un problema en la solicitud
+      this.errorMessage = 'Hubo un problema con el registro. Intenta de nuevo más tarde.';
+    });
   }
 
   // Validar que el nombre solo contenga letras y espacios

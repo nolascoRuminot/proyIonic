@@ -2,22 +2,28 @@
   <ion-toolbar>
     <ion-title>Movimientos</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="logout()">
-        <ion-icon name="power" slot="icon-only"></ion-icon>
-      </ion-button>
+      <ion-button (click)="logout()">Cerrar Sesión</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ion-searchbar [(ngModel)]="searchValue" placeholder="Buscar Movimiento por ID o Producto"></ion-searchbar>
+
   <ion-list>
-    <ion-item *ngFor="let movimiento of movimientos">
-      {{ movimiento.producto }} - {{ movimiento.tipo }} - {{ movimiento.cantidad }}
+    <ion-item *ngFor="let movimiento of filteredMovimientos" (click)="openModal(movimiento)">
+      <ion-label>
+        <h2>ID Movimiento: {{ movimiento.id }}</h2>
+        <p>Producto: {{ getProductName(movimiento.producto) }}</p> <!-- Muestra el nombre del producto -->
+        <p>Cantidad: {{ movimiento.cantidad }}</p>
+        <p>Bodega: {{ getBodegaName(movimiento.bodega) }}</p> <!-- Muestra el nombre de la bodega -->
+        <p>Tipo: {{ movimiento.tipo }}</p>
+      </ion-label>
     </ion-item>
   </ion-list>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="addMovimiento()">
+    <ion-fab-button (click)="openNewMovimientoModal()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>

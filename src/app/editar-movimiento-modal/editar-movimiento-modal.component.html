@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Editar Movimiento</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cerrar()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item>
+    <ion-label>Producto</ion-label>
+    <ion-input [(ngModel)]="movimiento.producto"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Cantidad</ion-label>
+    <ion-input [(ngModel)]="movimiento.cantidad" type="number"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Bodega</ion-label>
+    <ion-input [(ngModel)]="movimiento.bodega"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Tipo</ion-label>
+    <ion-select [(ngModel)]="movimiento.tipo">
+      <ion-select-option value="entrada">Entrada</ion-select-option>
+      <ion-select-option value="salida">Salida</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-button expand="block" (click)="guardar()">Guardar</ion-button>
+</ion-content>

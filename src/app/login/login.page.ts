@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AnimationController } from '@ionic/angular'; // Importar AnimationController
+import { DataService } from '../services/data.service'; 
 
 @Component({
   selector: 'app-login',
@@ -12,14 +13,20 @@ export class LoginPage implements OnInit {
   password!: string;
   errorMessage!: string;
   successMessage!: string;
+  mensaje!: string;  // Nuevo: Para manejar mensajes de advertencia
 
-  constructor(private router: Router, private route: ActivatedRoute, private animationCtrl: AnimationController) {} // Inyectar AnimationController
+  constructor(
+    private router: Router, 
+    private route: ActivatedRoute, 
+    private animationCtrl: AnimationController, 
+    private dataService: DataService // Inyectar el DataService
+  ) {}
 
   ngOnInit() {
-    // Capturar el mensaje de éxito de los queryParams si existe
+    // Capturar el mensaje de advertencia o redirección de los queryParams
     this.route.queryParams.subscribe(params => {
       if (params['mensaje']) {
-        this.successMessage = params['mensaje'];
+        this.mensaje = params['mensaje'];  // Asignar el mensaje de redirección o advertencia
       }
     });
 
@@ -36,11 +43,9 @@ export class LoginPage implements OnInit {
       // Ejecutar la animación
       animation.play();
     }
-
   }
 
   login() {
-
     if (!this.email || !this.password) {
       this.errorMessage = 'Debes llenar todos los datos solicitados.';
       return;
@@ -57,8 +62,25 @@ export class LoginPage implements OnInit {
     }
 
     this.errorMessage = ''; // Limpiar cualquier mensaje de error anterior.
-    // Navegar a la página de bodegas y pasar el email como parámetro
-    this.router.navigateByUrl(`/tabs/bodegas?usuario=${this.email}`);
+
+    // Verificar las credenciales con el servicio de datos
+    this.dataService.getUsers().subscribe(usersData => {
+      const user = usersData.find((user: any) => user.email === this.email && user.password === this.password);
+
+      if (user) {
+        this.successMessage = 'Login exitoso!';
+        this.errorMessage = '';
+        // Guardar la sesión
+        localStorage.setItem('usuario', this.email);  // Guardar el usuario en el almacenamiento local
+        // Navegar a la página de bodegas y pasar el email como parámetro
+        this.router.navigateByUrl(`/tabs/bodegas?usuario=${this.email}`);
+      } else {
+        this.errorMessage = 'Correo o contraseña incorrectos';
+        this.successMessage = '';
+      }
+    }, error => {
+      this.errorMessage = 'Hubo un problema con el servidor. Intenta de nuevo más tarde.';
+    });
   }
 
   isEmailValid(email: string): boolean {

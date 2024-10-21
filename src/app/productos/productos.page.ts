@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, AlertController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
-import * as $ from 'jquery';
+import { DataService } from '../services/data.service'; // Importar DataService
 import { ProductoModalComponent } from '../producto-modal/producto-modal.component';
 
 interface Producto {
@@ -15,36 +15,31 @@ interface Producto {
   delete?: boolean;
 }
 
-
 @Component({
   selector: 'app-productos',
   templateUrl: './productos.page.html',
   styleUrls: ['./productos.page.scss'],
 })
 export class ProductosPage implements OnInit {
-  productos: Producto[] = [
-    { id: 1, trackingCode: 'ABC123', image: 'https://home.ripley.cl/store/Attachment/WOP/D327/2000390575605/2000390575605_2.jpg', name: 'Producto 1', description: 'Descripción del producto 1', price: 100, category: 'Categoría 1' },
-    { id: 2, trackingCode: 'XYZ456', image: 'https://www.paris.cl/dw/image/v2/BCHW_PRD/on/demandware.static/-/Sites-cencosud-master-catalog/default/dwbc4a827e/images/imagenes-productos/625/513039-0000-001.jpg?sw=320&sh=409&sm=fit', name: 'Producto 2', description: 'Descripción del producto 2', price: 200, category: 'Categoría 2' }
-  ];
+  productos: Producto[] = [];
+  searchValue: string = '';
 
   constructor(
     private modalController: ModalController,
-    private router: Router
+    private alertController: AlertController,  // Importar AlertController para confirmar la eliminación
+    private router: Router,
+    private dataService: DataService // Inyectar el DataService
   ) {}
 
   ngOnInit() {
-    $(() => {
-      $('#search-input').on('input', function () {
-        const searchValue = $(this).val()?.toString().toLowerCase() || '';
+    // Obtener la lista de productos desde el servicio al iniciar la página
+    this.getProductos();
+  }
 
-        $('#productos-list .producto-item').filter(function () {
-          return $(this).text().toLowerCase().indexOf(searchValue) > -1;
-        }).show();
-
-        $('#productos-list .producto-item').filter(function () {
-          return $(this).text().toLowerCase().indexOf(searchValue) === -1;
-        }).hide();
-      });
+  // Obtener productos desde db.json
+  getProductos() {
+    this.dataService.getProducts().subscribe((response: Producto[]) => {
+      this.productos = response;
     });
   }
 
@@ -57,12 +52,12 @@ export class ProductosPage implements OnInit {
     const modal = await this.modalController.create({
       component: ProductoModalComponent,
       componentProps: {
-        producto: { id: undefined, trackingCode: '', image: '', name: '', description: '', price: null, category: '' } as Producto
+        producto: { trackingCode: '', image: '', name: '', description: '', price: null, category: '' } as Producto
       }
     });
 
     modal.onDidDismiss().then((result) => {
-      if (result.data && result.data.id === undefined) {
+      if (result.data) {
         this.addProducto(result.data);
       }
     });
@@ -70,13 +65,14 @@ export class ProductosPage implements OnInit {
     return await modal.present();
   }
 
-  // Agregar un nuevo producto a la lista
+  // Agregar un nuevo producto a la lista y al archivo db.json
   addProducto(newProducto: Producto) {
-    newProducto.id = this.productos.length + 1;
-    this.productos.push(newProducto);
+    this.dataService.addProducto(newProducto).subscribe((addedProducto: Producto) => {
+      this.productos.push(addedProducto);  // Añadir el producto a la lista local después de la respuesta del servidor
+    });
   }
 
-  // Editar producto
+  // Abrir modal para editar un producto existente
   async openModal(producto: Producto) {
     const modal = await this.modalController.create({
       component: ProductoModalComponent,
@@ -94,13 +90,61 @@ export class ProductosPage implements OnInit {
     return await modal.present();
   }
 
-  // Actualizar o eliminar producto
+  // Confirmar eliminación de producto
+  async confirmDelete(producto: Producto) {
+    const alert = await this.alertController.create({
+      header: 'Confirmar eliminación',
+      message: `¿Estás seguro de que deseas eliminar el producto "${producto.name}"?`,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => {
+            console.log('Eliminación cancelada');
+          }
+        },
+        {
+          text: 'Eliminar',
+          handler: () => {
+            this.deleteProducto(producto);  // Llamar al método para eliminar el producto
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  // Eliminar un producto
+  deleteProducto(producto: Producto) {
+    this.dataService.deleteProducto(producto.id!).subscribe(() => {
+      this.productos = this.productos.filter(p => p.id !== producto.id);  // Eliminar de la lista local
+    });
+  }
+
+  // Actualizar o eliminar un producto
   updateProducto(updatedProducto: Producto) {
-    const index = this.productos.findIndex(p => p.id === updatedProducto.id);
     if (updatedProducto.delete) {
-      this.productos.splice(index, 1); // Eliminar producto
+      this.confirmDelete(updatedProducto);  // Mostrar confirmación antes de eliminar
     } else {
-      this.productos[index] = updatedProducto; // Actualizar producto
+      this.dataService.updateProducto(updatedProducto).subscribe((updated: Producto) => {
+        const index = this.productos.findIndex(p => p.id === updated.id);
+        this.productos[index] = updated;  // Actualizar el producto en la lista local
+      });
     }
+  }
+
+  // Filtrar productos según el valor de búsqueda
+  get filteredProducts() {
+    if (!this.searchValue) {
+      return this.productos;  // Si no hay valor de búsqueda, retornar todos los productos
+    }
+    const searchTerm = this.searchValue.toLowerCase();
+    return this.productos.filter(producto => 
+      producto.name.toLowerCase().includes(searchTerm) || 
+      producto.description.toLowerCase().includes(searchTerm) ||
+      producto.category.toLowerCase().includes(searchTerm) ||
+      producto.trackingCode.toLowerCase().includes(searchTerm)
+    );
   }
 }

@@ -10,21 +10,89 @@
 </ion-header>
 
 <ion-content>
+  <!-- Sección de Inventario por Bodega -->
   <ion-card>
     <ion-card-header>
-      <ion-card-title>Stock Actual</ion-card-title>
+      <ion-card-title>Inventario por Bodega</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <!-- Visualiza el stock actual -->
+      <!-- Botón para mostrar/ocultar la lista de bodegas -->
+      <ion-button expand="block" (click)="toggleBodegas()">
+        {{ mostrarBodegas ? 'Ocultar Bodegas' : 'Mostrar Bodegas' }}
+      </ion-button>
+
+      <!-- Lista de bodegas, se despliega si mostrarBodegas es verdadero -->
+      <ion-list *ngIf="mostrarBodegas">
+        <ion-item *ngFor="let bodega of bodegas">
+          <ion-label>
+            <h2>{{ bodega.name }}</h2>
+            <!-- Botón para mostrar/ocultar el inventario de la bodega -->
+            <ion-button expand="block" (click)="toggleInventarioBodega(bodega.id)">
+              {{ mostrarInventario[bodega.id] ? 'Ocultar Inventario' : 'Mostrar Inventario' }}
+            </ion-button>
+
+            <!-- Lista de productos, se despliega si el inventario de la bodega está visible -->
+            <ion-list *ngIf="mostrarInventario[bodega.id]">
+              <ion-item *ngFor="let productoId of getKeys(calcularStockPorBodega()[bodega.id])">
+                <p>Producto: {{ getProductName(productoId) }}<br>Cantidad: {{ calcularStockPorBodega()[bodega.id][productoId] }}</p>
+              </ion-item>
+            </ion-list>
+          </ion-label>
+        </ion-item>
+      </ion-list>
     </ion-card-content>
   </ion-card>
 
+  <!-- Botón para mostrar/ocultar Movimientos -->
   <ion-card>
     <ion-card-header>
-      <ion-card-title>Movimientos Recientes</ion-card-title>
+      <ion-card-title>Movimientos</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <!-- Muestra los movimientos recientes -->
+      <ion-button expand="block" (click)="toggleMovimientos()">
+        {{ mostrarMovimientos ? 'Ocultar Movimientos' : 'Mostrar Movimientos' }}
+      </ion-button>
+
+      <!-- Secciones de Entradas y Salidas, se despliegan si mostrarMovimientos es verdadero -->
+      <ion-list *ngIf="mostrarMovimientos">
+        <!-- Botón para mostrar/ocultar Movimientos de Entradas -->
+        <ion-button expand="block" (click)="toggleEntradas()">
+          {{ mostrarEntradas ? 'Ocultar Entradas' : 'Mostrar Entradas' }}
+        </ion-button>
+        <ion-list *ngIf="mostrarEntradas">
+          <h1>ENTRADAS</h1>
+          <ion-item *ngFor="let movimiento of movimientosEntradas">
+            <ion-label>
+              <h2>ID Movimiento: {{ movimiento.id }}</h2>
+              <p>Producto: {{ getProductName(movimiento.producto) }}</p>
+              <p>Cantidad: {{ movimiento.cantidad }}</p>
+              <p>Bodega: {{ getBodegaName(movimiento.bodega) }}</p>
+              <p>Tipo: {{ movimiento.tipo }}</p>
+            </ion-label>
+            <ion-button color="primary" (click)="openModal(movimiento)">Editar</ion-button>
+            <ion-button color="danger" (click)="eliminarMovimiento(movimiento)">Eliminar</ion-button>
+          </ion-item>
+        </ion-list>
+
+        <!-- Botón para mostrar/ocultar Movimientos de Salidas -->
+        <ion-button expand="block" (click)="toggleSalidas()">
+          {{ mostrarSalidas ? 'Ocultar Salidas' : 'Mostrar Salidas' }}
+        </ion-button>
+        <ion-list *ngIf="mostrarSalidas">
+          <h1>SALIDAS</h1>
+          <ion-item *ngFor="let movimiento of movimientosSalidas">
+            <ion-label>
+              <h2>ID Movimiento: {{ movimiento.id }}</h2>
+              <p>Producto: {{ getProductName(movimiento.producto) }}</p>
+              <p>Cantidad: {{ movimiento.cantidad }}</p>
+              <p>Bodega: {{ getBodegaName(movimiento.bodega) }}</p>
+              <p>Tipo: {{ movimiento.tipo }}</p>
+            </ion-label>
+            <ion-button color="primary" (click)="openModal(movimiento)">Editar</ion-button>
+            <ion-button color="danger" (click)="eliminarMovimiento(movimiento)">Eliminar</ion-button>
+          </ion-item>
+        </ion-list>
+      </ion-list>
     </ion-card-content>
   </ion-card>
 </ion-content>

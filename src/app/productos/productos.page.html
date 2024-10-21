@@ -13,13 +13,13 @@
   <!-- Input de búsqueda -->
   <ion-item>
     <ion-label position="floating">Buscar Producto</ion-label>
-    <ion-input id="search-input" type="text"></ion-input>
+    <ion-input [(ngModel)]="searchValue" type="text"></ion-input> <!-- Agregar ngModel para el input -->
   </ion-item>
 
   <ion-card-content>
-    <ion-list id="productos-list">
-      <!-- Listar productos -->
-      <ion-item *ngFor="let producto of productos" class="producto-item" (click)="openModal(producto)">
+    <ion-list>
+      <!-- Listar productos filtrados -->
+      <ion-item *ngFor="let producto of filteredProducts" class="producto-item" (click)="openModal(producto)">
         <ion-thumbnail slot="start">
           <img [src]="producto.image" alt="{{ producto.name }}">
         </ion-thumbnail>
