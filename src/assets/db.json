@@ -15,6 +15,18 @@
       "nombre": "Nolasco",
       "email": "n@n.cl",
       "password": "1234***D"
+    },
+    {
+      "id": "9875",
+      "nombre": "Scarleth",
+      "email": "s@s.cl",
+      "password": "1234***S"
+    },
+    {
+      "id": "ff39",
+      "nombre": "sfuente",
+      "email": "sf@sf.cl",
+      "password": "1234***S"
     }
   ],
   "products": [
@@ -35,6 +47,24 @@
       "description": "Auto rojo",
       "price": 5000000,
       "category": "Vehiculos"
+    },
+    {
+      "id": "b52a",
+      "trackingCode": "1234",
+      "image": "https://belcorpchile.vtexassets.com/arquivos/ids/371894-800-800?v=638300586207500000&width=800&height=800&aspect=true",
+      "name": "perfume men",
+      "description": "perfume",
+      "price": 12333,
+      "category": "perfume"
+    },
+    {
+      "id": "74de",
+      "trackingCode": "34255",
+      "image": "https://www.lg.com/content/dam/channel/wcms/cl/images/lavadoras/wd14vvc4s6c_aptpecl_escl_cl_c/Basic-450.jpg",
+      "name": "Lavadora lg",
+      "description": "lavadora",
+      "price": 500000,
+      "category": "linea blanca"
     }
   ],
   "categories": [
@@ -81,6 +111,13 @@
       "bodega": "f6c1",
       "cantidad": 10,
       "tipo": "salida"
+    },
+    {
+      "id": "8867",
+      "producto": "74de",
+      "bodega": "f6c1",
+      "cantidad": 10,
+      "tipo": "entrada"
     }
   ]
 }
