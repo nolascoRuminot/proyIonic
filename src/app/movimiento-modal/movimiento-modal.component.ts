@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input,OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { DataService } from '../services/data.service';
 
@@ -13,6 +13,33 @@ export class MovimientoModalComponent {
   errorMessage: string = '';
 
   constructor(private modalController: ModalController, private dataService: DataService) {}
+  ngOnInit() {
+    this.reloadData();
+  }
+
+  // Recargar productos y bodegas automáticamente al abrir el modal
+  private reloadData() {
+    // Recargar productos
+    this.dataService.getProducts().subscribe({
+      next: (productos) => {
+        this.productos = productos;
+      },
+      error: (error) => {
+        console.error('Error al recargar productos:', error);
+      },
+    });
+  
+    // Recargar bodegas
+    this.dataService.getBodegas().subscribe({
+      next: (bodegas) => {
+        this.bodegas = bodegas;
+      },
+      error: (error) => {
+        console.error('Error al recargar bodegas:', error);
+      },
+    });
+  }
+  
 
   // Cerrar el modal sin guardar cambios
   dismiss() {

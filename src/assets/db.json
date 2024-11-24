@@ -40,15 +40,6 @@
       "category": "perfumes"
     },
     {
-      "id": "5a1c",
-      "trackingCode": "234",
-      "image": "https://media.biobiochile.cl/wp-content/uploads/2024/02/ferrari-purosangue.jpeg",
-      "name": "Auto 5",
-      "description": "Auto rojo",
-      "price": 5000000,
-      "category": "Vehiculos"
-    },
-    {
       "id": "b52a",
       "trackingCode": "1234",
       "image": "https://belcorpchile.vtexassets.com/arquivos/ids/371894-800-800?v=638300586207500000&width=800&height=800&aspect=true",
@@ -65,6 +56,51 @@
       "description": "lavadora",
       "price": 500000,
       "category": "linea blanca"
+    },
+    {
+      "id": "7eb9",
+      "trackingCode": "4536",
+      "image": "https://apasionados-por-el-cafe.s3.amazonaws.com/wp-content/uploads/2023/08/cafe-mas-caro-mundo-apasionados-por-el-cafe.jpg",
+      "name": "cafe",
+      "description": "cafe rico",
+      "price": 30000,
+      "category": "te y cafe"
+    },
+    {
+      "id": "4cb1",
+      "trackingCode": "flor",
+      "image": "https://belcorpchile.vtexassets.com/arquivos/ids/371894-800-800?v=638300586207500000&width=800&height=800&aspect=true",
+      "name": "flore",
+      "description": "floe",
+      "price": 34322,
+      "category": "flor"
+    },
+    {
+      "id": "b907",
+      "trackingCode": "24324",
+      "image": "https://belcorpchile.vtexassets.com/arquivos/ids/371894-800-800?v=638300586207500000&width=800&height=800&aspect=true",
+      "name": "caj23",
+      "description": "cja",
+      "price": 23,
+      "category": "444"
+    },
+    {
+      "id": "e6c4",
+      "trackingCode": "65737",
+      "image": "https://apasionados-por-el-cafe.s3.amazonaws.com/wp-content/uploads/2023/08/cafe-mas-caro-mundo-apasionados-por-el-cafe.jpg",
+      "name": "cafe insta",
+      "description": "cafe insta",
+      "price": 356377,
+      "category": "cafe"
+    },
+    {
+      "id": "b4b1",
+      "trackingCode": "12212",
+      "image": "https://home.ripley.cl/store/Attachment/WOP/D327/2000390575605/2000390575605_2.jpg",
+      "name": "perfume eros",
+      "description": "perfume",
+      "price": 121212,
+      "category": "perfume"
     }
   ],
   "categories": [
@@ -95,6 +131,30 @@
       "name": "Bodega 4",
       "location": "lampa",
       "capacity": 100
+    },
+    {
+      "id": "476a",
+      "name": "bodega 45",
+      "location": "santiago",
+      "capacity": 1000
+    },
+    {
+      "id": "35a3",
+      "name": "bodega 64",
+      "location": "pichilemu",
+      "capacity": 20000
+    },
+    {
+      "id": "d6ad",
+      "name": "vodega 78",
+      "location": "conchali",
+      "capacity": 232424
+    },
+    {
+      "id": "fec1",
+      "name": "odewga",
+      "location": "ajajjs",
+      "capacity": 17383
     }
   ],
   "movimientos": [
@@ -118,6 +178,20 @@
       "bodega": "f6c1",
       "cantidad": 10,
       "tipo": "entrada"
+    },
+    {
+      "id": "b3b3",
+      "producto": "74de",
+      "bodega": "d6ad",
+      "cantidad": 130,
+      "tipo": "entrada"
+    },
+    {
+      "id": "b6a4",
+      "producto": "74de",
+      "bodega": "476a",
+      "cantidad": 130,
+      "tipo": "salida"
     }
   ]
 }
