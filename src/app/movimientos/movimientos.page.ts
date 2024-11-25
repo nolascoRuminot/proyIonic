@@ -80,7 +80,15 @@ export class MovimientosPage implements OnInit {
 
     modal.onDidDismiss().then((result) => {
       if (result.data) {
-        this.updateMovimiento(result.data);
+        if (result.data.delete) {
+          // Si se elimina, actualizar la lista local eliminando el movimiento
+          this.movimientos = this.movimientos.filter(
+            (mov) => mov.id !== result.data.id
+          );
+        } else {
+          // Si se actualiza, llamar a la función de actualización
+          this.updateMovimiento(result.data);
+        }
       }
     });
 

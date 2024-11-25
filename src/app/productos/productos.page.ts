@@ -117,10 +117,11 @@ export class ProductosPage implements OnInit {
 
   // Eliminar un producto
   deleteProducto(producto: Producto) {
-    this.dataService.deleteProducto(producto.id!).subscribe(() => {
-      this.productos = this.productos.filter(p => p.id !== producto.id);  // Eliminar de la lista local
+    this.dataService.deleteProducto(producto.id!.toString()).subscribe(() => {
+      this.productos = this.productos.filter(p => p.id !== producto.id); // Eliminar de la lista local
     });
   }
+  
 
   // Actualizar o eliminar un producto
   updateProducto(updatedProducto: Producto) {

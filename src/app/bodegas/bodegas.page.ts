@@ -124,11 +124,11 @@ export class BodegasPage implements OnInit {
 
   // Eliminar la bodega con confirmación
   deleteBodega(bodega: Bodega) {
-    this.dataService.deleteBodega(bodega.id).subscribe(() => {
+    this.dataService.deleteBodega(bodega.id.toString()).subscribe(() => {
       this.bodegas = this.bodegas.filter(b => b.id !== bodega.id); // Eliminar de la lista local
     });
   }
-
+  
   // Actualizar o eliminar la bodega
   updateBodega(updatedBodega: Bodega) {
     if (updatedBodega.delete) {

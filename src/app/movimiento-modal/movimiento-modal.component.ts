@@ -19,6 +19,8 @@ export class MovimientoModalComponent {
 
   // Recargar productos y bodegas automáticamente al abrir el modal
   private reloadData() {
+    this.dataService.syncAll(); // Sincronizar todos los datos antes de cargar
+  
     // Recargar productos
     this.dataService.getProducts().subscribe({
       next: (productos) => {
@@ -40,6 +42,7 @@ export class MovimientoModalComponent {
     });
   }
   
+  
 
   // Cerrar el modal sin guardar cambios
   dismiss() {
@@ -48,11 +51,24 @@ export class MovimientoModalComponent {
 
   // Guardar o actualizar un movimiento
   save() {
-    if (!this.movimiento.producto || !this.movimiento.tipo || !this.movimiento.cantidad) {
+    if (!this.movimiento.producto || !this.movimiento.tipo || !this.movimiento.cantidad || !this.movimiento.bodega) {
       this.errorMessage = 'Por favor, rellena todos los campos.';
       return;
     }
-
+  
+    const productoValido = this.productos.find(p => p.id === this.movimiento.producto);
+    const bodegaValida = this.bodegas.find(b => b.id === this.movimiento.bodega);
+  
+    if (!productoValido) {
+      this.errorMessage = 'Producto no válido.';
+      return;
+    }
+  
+    if (!bodegaValida) {
+      this.errorMessage = 'Bodega no válida.';
+      return;
+    }
+  
     if (this.movimiento.id) {
       this.dataService.updateMovimiento(this.movimiento).subscribe(() => {
         this.modalController.dismiss(this.movimiento);
@@ -63,6 +79,7 @@ export class MovimientoModalComponent {
       });
     }
   }
+  
 
   // Eliminar un movimiento
   delete() {
