@@ -9,47 +9,24 @@
 
 <ion-content>
   <!-- Sección de Código de Barras -->
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Código de Seguimiento</ion-card-title>
-    </ion-card-header>
-
-    <ion-card-content>
-      <!-- Botón para escanear código de barras -->
-      <ion-item>
-        <ion-button expand="full" (click)="scanBarcode()">Escanear Código de Barras</ion-button>
-      </ion-item>
-
-      <!-- Mostrar código de barras escaneado -->
-      <div *ngIf="producto.trackingCode">
-        <p>Código de Barras: {{ producto.trackingCode }}</p>
-      </div>
-    </ion-card-content>
-  </ion-card>
+  <ion-item>
+    <ion-label position="stacked">Código de Seguimiento</ion-label>
+    <ion-button expand="full" (click)="scanBarcode()">Escanear Código de Barras</ion-button>
+    <div *ngIf="producto.trackingCode">
+      <p>Código de Barras: {{ producto.trackingCode }}</p>
+    </div>
+  </ion-item>
 
   <!-- Sección de Imagen -->
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Imagen del producto</ion-card-title>
-    </ion-card-header>
-
-    <ion-card-content>
-      <!-- Botón para tomar foto -->
-      <ion-item>
-        <ion-button expand="full" (click)="captureImage()">Tomar Foto o Subir Imagen</ion-button>
-      </ion-item>
-
-      <!-- Botón para subir foto -->
-      <ion-item>
-        <input type="file" id="fileInput" accept="image/*" (change)="handleFileInput($event)" style="display: none;" />
-      </ion-item>
-
-      <!-- Mostrar imagen capturada o subida -->
-      <div *ngIf="producto.image" class="image-container">
-        <img [src]="producto.image" alt="Imagen del producto" />
-      </div>
-    </ion-card-content>
-  </ion-card>
+  <ion-item>
+    <ion-label position="stacked">Imagen del producto</ion-label>
+    <ion-button expand="full" (click)="captureImage()">Tomar Foto o Subir Imagen</ion-button>
+    <input type="file" id="fileInput" accept="image/*" (change)="handleFileInput($event)" style="display: none;" /> 
+    <!-- Mostrar imagen capturada o subida -->
+    <div *ngIf="producto.image" class="image-container">
+      <img [src]="producto.image" alt="Imagen del producto" />
+    </div>
+  </ion-item>
 
 
   <!-- Nombre del producto -->
