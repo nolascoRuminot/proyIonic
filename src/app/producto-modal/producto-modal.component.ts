@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 
 @Component({
   selector: 'app-producto-modal',
@@ -16,15 +18,58 @@ export class ProductoModalComponent {
     this.modalController.dismiss();
   }
 
-  // Validar si una URL es válida
-  isValidUrl(url: string): boolean {
-    const urlPattern = new RegExp('^(https?:\\/\\/)?' + // protocolo
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|' + // dominio
-      '((\\d{1,3}\\.){3}\\d{1,3}))' + // o IP (v4) dirección
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // puerto y ruta
-      '(\\?[;&a-z\\d%_.~+=-]*)?' + // cadena de consulta
-      '(\\#[-a-z\\d_]*)?$', 'i'); // fragmento de URL
-    return !!urlPattern.test(url);
+    // Iniciar escaneo de código de barras
+  async scanBarcode() {
+    try {
+      const result = await BarcodeScanner.scan();
+  
+      if (result && result.barcodes && result.barcodes.length > 0) {
+        // Tomamos el primer código escaneado
+        const scannedCode = result.barcodes[0]?.displayValue || '';
+        if (scannedCode) {
+          this.producto.trackingCode = scannedCode; // Asignar el código escaneado
+        } else {
+          this.errorMessage = 'No se pudo obtener el valor del código.';
+        }
+      } else {
+        this.errorMessage = 'No se detectaron códigos de barras.';
+      }
+    } catch (error) {
+      console.error('Error escaneando el código de barras:', error);
+      this.errorMessage = 'Ocurrió un error al intentar escanear el código.';
+    }
+  }
+  // Capturar imagen desde la cámara o galería
+  async captureImage() {
+    try {
+      const image = await Camera.getPhoto({
+        quality: 90,
+        allowEditing: false,
+        resultType: CameraResultType.DataUrl,
+        source: CameraSource.Prompt, // Permite elegir entre cámara o galería
+      });
+
+      if (image.dataUrl) {
+        this.producto.image = image.dataUrl; // Actualizar la imagen del producto
+      } else {
+        this.errorMessage = 'No se pudo obtener la imagen.';
+      }
+    } catch (error) {
+      console.error('Error capturando la imagen:', error);
+      this.errorMessage = 'No se pudo cargar la imagen. Verifica los permisos o intenta nuevamente.';
+    }
+  }
+
+  // Subir archivo de imagen (por ejemplo, desde la galería)
+  handleFileInput(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.producto.image = reader.result as string; // Actualizar la imagen del producto
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   // Guardar los cambios o agregar un nuevo producto, con validación
@@ -35,11 +80,6 @@ export class ProductoModalComponent {
       return;
     }
 
-    // Validar que la imagen sea una URL válida
-    if (!this.isValidUrl(this.producto.image)) {
-      this.errorMessage = 'La URL de la imagen no es válida.';
-      return;
-    }
 
     // Validación adicional para asegurarse de que "price" sea un número válido mayor que 0
     if (isNaN(this.producto.price) || this.producto.price <= 0) {

@@ -8,7 +8,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true">
 
 
         <activity
@@ -34,10 +35,21 @@
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="sqlite" />
-        </provider>
+
+            <meta-data
+              android:name="android.support.FILE_PROVIDER_PATHS"
+              android:resource="@xml/file_paths" />
+          </provider>
     </application>
 
     <!-- Permissions -->
+    <uses-permission android:name="android.permission.CAMERA" /> <!-- Permiso para la cámara -->
+    <uses-feature android:name="android.hardware.camera" android:required="true" /> <!-- Requiere la cámara -->
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- Permiso para leer almacenamiento -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- Permiso para escribir en almacenamiento -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <uses-permission android:name="android.permission.INTERNET" />
 </manifest>
